@@ -1,19 +1,27 @@
 function add(numbers) {
-    if (numbers === "") return 0;
+  if (numbers === "") return 0;
 
-    let delimiter = /,|\n/;
-    if (numbers.startsWith("//")) {
-        const parts = numbers.split('\n');
-        delimiter = new RegExp(parts[0].slice(2));
-        numbers = parts[1];
+  let delimiter = /,|\n/;
+  if (numbers.startsWith("//")) {
+    const match = numbers.match(/^\/\/(.+)\n/);
+    if (match) {
+      let delimiterPart = match[1];
+      // multiple delimiters or length
+      if (delimiterPart.startsWith('[')) {
+        const all = delimiterPart.match(/\[([^\]]+)\]/g);
+        delimiterPart = all.map(d => d.slice(1, -1)).join('|');
+      }
+      delimiter = new RegExp(delimiterPart);
     }
+    numbers = numbers.split('\n')[1];
+  }
 
-    const nums = numbers.split(delimiter).map(Number);
-    const negatives = nums.filter(n => n < 0);
-    if (negatives.length > 0) {
-        throw new Error(`negatives not allowed: ${negatives.join(",")}`);
-    }
+  const nums = numbers.split(delimiter).map(Number);
+  const negatives = nums.filter(n => n < 0);
+  if (negatives.length > 0) {
+    throw new Error(`negatives not allowed: ${negatives.join(",")}`);
+  }
 
-    return nums.reduce((sum, n) => sum + n, 0);
+  return nums.filter(n => n <= 1000).reduce((sum, n) => sum + n, 0);
 }
 module.exports = { add };
