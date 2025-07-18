@@ -19,5 +19,5 @@ Basically, you give it a string like "1,2,3" or even fancy stuff like "//[***]\n
 
  How to run :-
 
--> npm install
+-> npm install 
 -> npm run test OR npm test
